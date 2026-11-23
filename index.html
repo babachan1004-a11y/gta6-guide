@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f3f5f4" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0d1517" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="GTA6攻略">
+  <meta name="robots" content="noindex">
+  <title>GTA6 攻略ノート</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+ <header class="top">
+  <div class="brand"><h1>GTA6 <span>攻略ノート</span></h1><span class="sync" id="sync"></span></div>
+  <div class="stats">
+   <div class="stat"><div class="k">ぜんぶ</div><div class="v" id="sAll">0<small>/0</small></div><div class="track"><i id="tAll"></i></div></div>
+   <div class="stat w"><div class="k">金武器</div><div class="v" id="sW">0<small>/0</small></div><div class="track"><i id="tW"></i></div></div>
+   <div class="stat"><div class="k">レア車の売却額</div><div class="v" id="sMoney">$0</div><div class="k" id="sV">0/0 台</div></div>
+  </div>
+  <div class="alert" id="missAlert" hidden></div>
+ </header>
+
+ <div class="bar">
+  <div class="tabs" role="toolbar" aria-label="絞り込み">
+   <button class="tab" data-f="all" aria-pressed="true">すべて<span class="c" id="cAll"></span></button>
+   <button class="tab" data-f="w" aria-pressed="false">金武器<span class="c" id="cW"></span></button>
+   <button class="tab" data-f="v" aria-pressed="false">レア車<span class="c" id="cV"></span></button>
+   <button class="tab" data-f="miss" aria-pressed="false">取り逃し注意<span class="c" id="cMiss"></span></button>
+   <button class="tab" data-f="money" aria-pressed="false">金策<span class="c" id="cMoney"></span></button>
+  </div>
+  <div class="row2">
+   <input class="search" id="q" type="search" placeholder="名前・場所で探す（例：マクラーレン）" aria-label="検索">
+   <label class="toggle"><input type="checkbox" id="todo">未取得だけ</label>
+  </div>
+ </div>
+
+ <div class="list" id="list"><div class="empty">読み込み中…</div></div>
+
+ <div class="foot">
+  <div>出典：<a href="https://youtu.be/RbH6LN1MYHA" target="_blank" rel="noopener">ワイトのゲーム攻略所（金武器）</a>／<a href="https://youtu.be/aIhmS9BEsLE" target="_blank" rel="noopener">ゆるいカメ（レア車10選）</a>／<a href="https://youtube.com/shorts/Ql9O4pCSRG8" target="_blank" rel="noopener">ゲームトリップ（グロウラー）</a>／<a href="https://youtu.be/Pxqt3P6bC4U" target="_blank" rel="noopener">WIZARD SPONGE</a>・<a href="https://www.gtabase.com/gta-6/vehicles/venturas-blvd-elegy-90" target="_blank" rel="noopener">GTABase</a>（エレジー）</div>
+  <div>画像は各動画のキャプチャ。マップの黄色い丸は目的地に後から描き足したもの。車名・価格は動画内の車両パネル表示から。チェックはこの端末に保存されます。</div>
+  <div id="updated"></div>
+ </div>
+</div>
+
+<div class="scrim" id="scrim" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="dTitle"></div></div>
+<div id="lb" hidden><img alt=""></div>
+<script src="app.js"></script>
+</body>
+</html>
