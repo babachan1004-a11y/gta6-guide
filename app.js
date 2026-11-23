@@ -13,7 +13,110 @@ let ui = { view: 'story', ch: 1, sideType: 'すべて' };
 try { checks = JSON.parse(localStorage.getItem(LS) || '{}') || {}; } catch (e) { checks = {}; }
 try { ui = { ...ui, ...(JSON.parse(localStorage.getItem(LS_UI) || '{}') || {}) }; } catch (e) { /* 既定値のまま */ }
 
-function save() { try { localStorage.setItem(LS, JSON.stringify(checks)); } catch (e) { /* 保存できない環境でも表示は続ける */ } }
+// ---------- 同期（Google Apps Script 経由でスプレッドシートに保存） ----------
+// marks = { id: { v: 1|0, t: 更新時刻ms } }。端末どうしは項目ごとに新しい方を採用する。
+const LS_MARKS = 'gta6-marks';
+const LS_SYNC = 'gta6-sync';
+let marks = {};
+try { marks = JSON.parse(localStorage.getItem(LS_MARKS) || '{}') || {}; } catch (e) { marks = {}; }
+// 旧形式のチェックを引き継ぐ
+Object.keys(checks).forEach((id) => { if (!marks[id]) marks[id] = { v: 1, t: 1 }; });
+let syncUrl = '';
+try { syncUrl = localStorage.getItem(LS_SYNC) || ''; } catch (e) { syncUrl = ''; }
+let syncState = syncUrl ? 'wait' : 'off';
+let pushTimer = null;
+let pushing = false;
+let dirty = false;
+
+function applyMarks() {
+  checks = {};
+  Object.keys(marks).forEach((id) => { if (marks[id].v) checks[id] = true; });
+}
+function mergeMarks(remote) {
+  let changed = false;
+  Object.keys(remote || {}).forEach((id) => {
+    const r = remote[id];
+    if (r && typeof r.t === 'number' && (!marks[id] || r.t > marks[id].t)) { marks[id] = { v: r.v ? 1 : 0, t: r.t }; changed = true; }
+  });
+  return changed;
+}
+function setSync(state) {
+  syncState = state;
+  const el = $('#syncBtn');
+  if (!el) return;
+  const label = { off: '同期オフ', wait: '同期中…', ok: '同期済み', err: '同期エラー' }[state];
+  el.textContent = label;
+  el.dataset.state = state;
+}
+async function pull() {
+  if (!syncUrl) return;
+  setSync('wait');
+  try {
+    const r = await fetch(syncUrl, { cache: 'no-store' });
+    const j = await r.json();
+    if (j.error) throw new Error(j.error);
+    j.marks = j.marks || {};
+    const changed = mergeMarks(j.marks);
+    const localNewer = Object.keys(marks).some((id) => !j.marks[id] || marks[id].t > j.marks[id].t);
+    if (changed) { applyMarks(); saveLocal(); renderAll(); }
+    if (localNewer) schedulePush(); else setSync('ok');
+  } catch (e) { setSync('err'); }
+}
+async function push() {
+  if (!syncUrl) return;
+  if (pushing) { dirty = true; return; }
+  pushing = true; dirty = false;
+  setSync('wait');
+  try {
+    const r = await fetch(syncUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ marks }) });
+    const j = await r.json();
+    if (j.error) throw new Error(j.error);
+    if (mergeMarks(j.marks)) { applyMarks(); saveLocal(); renderAll(); }
+    setSync('ok');
+  } catch (e) { setSync('err'); }
+  pushing = false;
+  if (dirty) push();
+}
+function schedulePush() { clearTimeout(pushTimer); pushTimer = setTimeout(push, 800); }
+function saveLocal() {
+  try { localStorage.setItem(LS_MARKS, JSON.stringify(marks)); localStorage.setItem(LS, JSON.stringify(checks)); } catch (e) { /* 保存できない環境でも表示は続ける */ }
+}
+function save() { saveLocal(); schedulePush(); }
+
+// 同期リンク（…/#sync=<URLをbase64url>）で開いたら、この端末に同期先を覚える
+(function readSyncLink() {
+  const m = location.hash.match(/^#sync=([A-Za-z0-9_-]+)$/);
+  if (!m) return;
+  try {
+    const url = atob(m[1].replace(/-/g, '+').replace(/_/g, '/'));
+    if (/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec\?k=[\w-]+$/.test(url)) {
+      syncUrl = url;
+      localStorage.setItem(LS_SYNC, url);
+    }
+  } catch (e) { /* 壊れたリンクは無視 */ }
+  history.replaceState(null, '', location.pathname);
+}());
+
+function openSync() {
+  const on = !!syncUrl;
+  $('#sheet').innerHTML = `<div class="sheet-h"><div><h2 id="dTitle">端末間の同期</h2></div><button class="x" id="close" aria-label="閉じる">×</button></div>
+  ${on ? `<p>この端末は同期がオンです。チェックはあなたの Google ドライブのスプレッドシート「GTA6攻略ノート 同期データ」に保存され、ほかの端末と自動で合わせます。</p>
+   <p class="muted">状態：${{ wait: '同期中', ok: '同期済み', err: 'つながりません（通信を確認してください。この端末には保存されています）', off: 'オフ' }[syncState]}</p>
+   <div class="links"><button class="btn" id="syncNow">今すぐ同期</button><button class="btn" id="syncOff">この端末の同期をやめる</button></div>`
+  : `<p>この端末は同期がオフです。チェックはこの端末の中だけに保存されています。</p>
+   <p>同期するには、別に送られた<b>同期リンク</b>をこの端末で一度開いてください。</p>`}`;
+  $('#scrim').hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+document.addEventListener('click', (e) => {
+  if (e.target.id === 'syncBtn') { openSync(); return; }
+  if (e.target.id === 'syncNow') { pull(); closeSheet(); return; }
+  if (e.target.id === 'syncOff') {
+    try { localStorage.removeItem(LS_SYNC); } catch (err) { /* 無視 */ }
+    syncUrl = ''; setSync('off'); closeSheet();
+  }
+});
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') pull(); });
 function saveUi() { try { localStorage.setItem(LS_UI, JSON.stringify(ui)); } catch (e) { /* 同上 */ } }
 const count = (arr) => arr.filter((x) => checks[x.id]).length;
 const allMissions = () => D.story.chapters.flatMap((c) => c.missions);
@@ -177,7 +280,8 @@ function renderAll() {
 }
 
 function toggle(id) {
-  if (checks[id]) delete checks[id]; else checks[id] = true;
+  marks[id] = { v: checks[id] ? 0 : 1, t: Date.now() };
+  applyMarks();
   save();
   renderAll();
   if (!$('#scrim').hidden) openSheet(id);
@@ -224,7 +328,10 @@ fetch('data.json?t=' + Date.now())
     D = { ...D, ...d };
     ITEMS = d.items || [];
     $('#updated').textContent = d.updated ? `データ更新：${d.updated}` : '';
+    applyMarks();
     renderAll();
+    setSync(syncState);
+    pull();
   })
   .catch(() => { $('#storyList').innerHTML = '<div class="empty">データを読み込めませんでした。通信を確認して開き直してください。</div>'; });
 
