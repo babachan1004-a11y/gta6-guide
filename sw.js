@@ -1,4 +1,4 @@
-﻿// 繧ｪ繝輔Λ繧､繝ｳ縺ｧ繧よ怙蠕後↓隕九◆繝・・繧ｿ繧定｡ｨ遉ｺ縺吶ｋ縺溘ａ縺ｮ Service Worker縲・// 縺ｩ縺ｮ繝輔ぃ繧､繝ｫ繧ゅ∪縺壹ロ繝・ヨ縺九ｉ蜿悶ｊ縲∝叙繧後↑縺代ｌ縺ｰ繧ｭ繝｣繝・す繝･繧定ｿ斐☆・亥ｸｸ縺ｫ譛譁ｰ繧貞━蜈茨ｼ峨・const CACHE = 'gta6-v6';
+﻿// 繧ｪ繝輔Λ繧､繝ｳ縺ｧ繧よ怙蠕後↓隕九◆繝・・繧ｿ繧定｡ｨ遉ｺ縺吶ｋ縺溘ａ縺ｮ Service Worker縲・// 縺ｩ縺ｮ繝輔ぃ繧､繝ｫ繧ゅ∪縺壹ロ繝・ヨ縺九ｉ蜿悶ｊ縲∝叙繧後↑縺代ｌ縺ｰ繧ｭ繝｣繝・す繝･繧定ｿ斐☆・亥ｸｸ縺ｫ譛譁ｰ繧貞━蜈茨ｼ峨・const CACHE = 'gta6-v7';
 const SHELL = ['./', 'index.html', 'style.css', 'app.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
 
 self.addEventListener('install', (e) => {

@@ -172,7 +172,7 @@ function missionRow(m) {
   return `<div class="mrow${on ? ' done' : ''}${m.miss ? ' miss' : ''}">
    <button class="chk sm" role="checkbox" aria-checked="${on}" data-id="${m.id}" aria-label="${m.n} をクリア済みにする">✓</button>
    <button class="mopen" data-m="${m.id}" aria-expanded="${open}"><span class="nm">${m.n}</span><span class="chips">${flags(m)}</span>${m.tips.length ? `<span class="more" aria-hidden="true">${open ? '▲' : '▼'}</span>` : '<span class="more" aria-hidden="true">›</span>'}</button>
-   ${open ? `<div class="mbody">${m.tips.length ? `<ul class="tips">${m.tips.map((t) => `<li>${t}</li>`).join('')}</ul>` : '<p class="muted">特に注意点はありません。</p>'}<a class="ext" href="${m.url}" target="_blank" rel="noopener">攻略チャートを見る（GameWith）↗</a></div>` : ''}
+   ${open ? `<div class="mbody">${m.tips.length ? `<ul class="tips">${m.tips.map((t) => `<li>${t}</li>`).join('')}</ul>` : '<p class="muted">特に注意点はありません。</p>'}${m.url ? `<a class="ext" href="${m.url}" target="_blank" rel="noopener">攻略チャートを見る（GameWith）↗</a>` : ''}${m.src ? `<a class="ext" href="${m.src}" target="_blank" rel="noopener">${m.srcName || '情報元'}を見る ↗</a>` : ''}</div>` : ''}
   </div>`;
 }
 

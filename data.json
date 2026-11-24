@@ -736,6 +736,18 @@
     ],
     "missions": [
      {
+      "id": "x-prologue",
+      "n": "プロローグ",
+      "g": "m",
+      "opt": false,
+      "tips": [
+       "ルシア操作で始まる最初のミッション",
+       "GameWith の一覧にはないミッション。英語の攻略サイト（GTABase ほか）で確認"
+      ],
+      "src": "https://www.gtabase.com/missions/gta-6/",
+      "srcName": "GTABase"
+     },
+     {
       "id": "s588301",
       "n": "ちょっとした釣り",
       "g": "m",
@@ -1468,6 +1480,18 @@
       "url": "https://gamewith.jp/gta6/589337"
      },
      {
+      "id": "x-tyrone",
+      "n": "タイロン",
+      "g": "m",
+      "opt": false,
+      "tips": [
+       "ジェイソンのミッション。タイロンに仕事の話を聞きに行く",
+       "GameWith の一覧にはないミッション。英語の攻略サイト（GTABase ほか）で確認"
+      ],
+      "src": "https://www.gtabase.com/gta-6/missions/tyrone",
+      "srcName": "GTABase"
+     },
+     {
       "id": "s589349",
       "n": "おいでネコちゃん",
       "g": "m",
@@ -1624,6 +1648,19 @@
       "opt": false,
       "tips": [],
       "url": "https://gamewith.jp/gta6/589486"
+     },
+     {
+      "id": "x-heistplan",
+      "n": "Heist Planning（強盗の計画）",
+      "g": "m",
+      "opt": false,
+      "tips": [
+       "カルテル強盗の準備作業",
+       "日本語の正式名がわからないので英語名のまま",
+       "GameWith の一覧にはないミッション。英語の攻略サイト（GTABase ほか）で確認"
+      ],
+      "src": "https://www.gtabase.com/missions/gta-6/",
+      "srcName": "GTABase"
      },
      {
       "id": "s589484",
@@ -1883,6 +1920,7 @@
     "warn": [
      "サブ「最低な運転手」は「パワープレイ」開始で消える",
      "サブ「シェイナを迎えに行け」は時間経過で消える",
+     "任意「This is a Free Call From…」（ルシア専用）は時間経過で消える",
      "「斜陽」を始めると5章途中まで自由行動できない"
     ],
     "missions": [
@@ -2045,6 +2083,20 @@
       "opt": false,
       "tips": [],
       "url": "https://gamewith.jp/gta6/589660"
+     },
+     {
+      "id": "x-freecall",
+      "n": "This is a Free Call From…",
+      "g": "m",
+      "opt": true,
+      "miss": true,
+      "tips": [
+       "ルシア専用の任意ミッション。<b>時間が経つと消える</b>ので、出たらすぐやる",
+       "日本語の正式名がわからないので英語名のまま",
+       "GameWith の一覧にはないミッション。英語の攻略サイト（GTABase ほか）で確認"
+      ],
+      "src": "https://gmtreks.com/gta6/page/01M7QSGT3QP6VF7KRTAP9HRZ1W",
+      "srcName": "gmtreks"
      },
      {
       "id": "s589657",
@@ -2279,6 +2331,19 @@
        "自分の車は地下1階の駐車場"
       ],
       "url": "https://gamewith.jp/gta6/589856"
+     },
+     {
+      "id": "x-unfinished",
+      "n": "Unfinished Business",
+      "g": "m",
+      "opt": false,
+      "tips": [
+       "「嘘偽りなきエイブ」の後、「身柄の保護」の前",
+       "日本語の正式名がわからないので英語名のまま",
+       "GameWith の一覧にはないミッション。英語の攻略サイト（GTABase ほか）で確認"
+      ],
+      "src": "https://www.gtabase.com/missions/gta-6/",
+      "srcName": "GTABase"
      },
      {
       "id": "s589884",
