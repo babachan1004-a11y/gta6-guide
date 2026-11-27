@@ -156,7 +156,7 @@ function renderStory() {
   warn.innerHTML = `<span aria-hidden="true">⚠</span><div><b>${ch.no}章の取り逃し注意</b><ul>${ch.warn.map((w) => `<li>${w}</li>`).join('')}</ul></div>`;
   const q = $('#qStory').value.trim().toLowerCase();
   const todo = $('#todoStory').checked;
-  const pick = (m) => (!todo || !checks[m.id]) && (!q || (m.n + m.tips.join('') + (m.guide ? m.guide.f.join('') + (m.guide.h || []).join('') : '')).toLowerCase().includes(q));
+  const pick = (m) => (!todo || !checks[m.id]) && (!q || (m.n + m.tips.join('') + (m.guide ? [m.guide.w, ...m.guide.f, ...(m.guide.h || []), ...(m.guide.c || []), ...(m.guide.m || [])].join('') : '')).toLowerCase().includes(q));
   const group = (g, label) => {
     const rows = ch.missions.filter((m) => m.g === g && pick(m));
     if (!rows.length) return '';
@@ -176,11 +176,24 @@ function missionRow(m) {
   </div>`;
 }
 
+// 動画はまずサムネイルだけ出し、タップしたときに YouTube の埋め込みに差し替える（一覧が重くならないように）。
+const mmss = (t) => `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;
+function videoHtml(vs) {
+  if (!vs || !vs.length) return '';
+  return `<div class="vids${vs.length > 1 ? ' multi' : ''}">${vs.map(([id, t, by, label]) => `<figure class="vid">
+    <button class="yt" data-yt="${id}" data-t="${t}" aria-label="動画を再生：${label || by}"><img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="" loading="lazy"><span class="play" aria-hidden="true">▶</span>${t ? `<span class="at">${mmss(t)}〜</span>` : ''}</button>
+    <figcaption>${label ? `<b>${label}</b> ` : ''}<a href="https://youtu.be/${id}?t=${t}" target="_blank" rel="noopener">${by}</a></figcaption></figure>`).join('')}</div>`;
+}
+const list = (title, arr, cls) => (arr && arr.length ? `<h4>${title}</h4><ul class="${cls}">${arr.map((s) => `<li>${s}</li>`).join('')}</ul>` : '');
 function guideHtml(g) {
   if (!g) return '';
   return `<div class="guide">
+   ${videoHtml(g.v)}
+   ${g.w ? `<p class="where"><b>発生</b>${g.w}</p>` : ''}
    <h4>流れ</h4><ol class="flow">${g.f.map((s) => `<li>${s}</li>`).join('')}</ol>
-   ${g.h && g.h.length ? `<h4>コツ</h4><ul class="tips">${g.h.map((s) => `<li>${s}</li>`).join('')}</ul>` : ''}
+   ${list('分岐・選択肢', g.c, 'tips')}
+   ${list('取り逃し', g.m, 'tips miss')}
+   ${list('コツ', g.h, 'tips')}
    ${g.r ? `<p class="rew"><b>報酬</b>${g.r}</p>` : ''}
   </div>`;
 }
@@ -297,6 +310,16 @@ function toggle(id) {
 }
 
 document.addEventListener('click', (e) => {
+  const yt = e.target.closest('[data-yt]');
+  if (yt) {
+    const f = document.createElement('iframe');
+    f.src = `https://www.youtube-nocookie.com/embed/${yt.dataset.yt}?start=${yt.dataset.t}&autoplay=1&playsinline=1&rel=0`;
+    f.title = 'YouTube 動画';
+    f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+    f.allowFullscreen = true;
+    yt.replaceWith(f);
+    return;
+  }
   const c = e.target.closest('[data-id]');
   if (c) { e.preventDefault(); toggle(c.dataset.id); return; }
   const v = e.target.closest('.view');
