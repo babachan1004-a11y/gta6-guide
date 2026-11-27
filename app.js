@@ -156,7 +156,7 @@ function renderStory() {
   warn.innerHTML = `<span aria-hidden="true">⚠</span><div><b>${ch.no}章の取り逃し注意</b><ul>${ch.warn.map((w) => `<li>${w}</li>`).join('')}</ul></div>`;
   const q = $('#qStory').value.trim().toLowerCase();
   const todo = $('#todoStory').checked;
-  const pick = (m) => (!todo || !checks[m.id]) && (!q || (m.n + m.tips.join('')).toLowerCase().includes(q));
+  const pick = (m) => (!todo || !checks[m.id]) && (!q || (m.n + m.tips.join('') + (m.guide ? m.guide.f.join('') + (m.guide.h || []).join('') : '')).toLowerCase().includes(q));
   const group = (g, label) => {
     const rows = ch.missions.filter((m) => m.g === g && pick(m));
     if (!rows.length) return '';
@@ -171,8 +171,17 @@ function missionRow(m) {
   const open = ui.open === m.id;
   return `<div class="mrow${on ? ' done' : ''}${m.miss ? ' miss' : ''}">
    <button class="chk sm" role="checkbox" aria-checked="${on}" data-id="${m.id}" aria-label="${m.n} をクリア済みにする">✓</button>
-   <button class="mopen" data-m="${m.id}" aria-expanded="${open}"><span class="nm">${m.n}</span><span class="chips">${flags(m)}</span>${m.tips.length ? `<span class="more" aria-hidden="true">${open ? '▲' : '▼'}</span>` : '<span class="more" aria-hidden="true">›</span>'}</button>
-   ${open ? `<div class="mbody">${m.tips.length ? `<ul class="tips">${m.tips.map((t) => `<li>${t}</li>`).join('')}</ul>` : '<p class="muted">特に注意点はありません。</p>'}${m.url ? `<a class="ext" href="${m.url}" target="_blank" rel="noopener">攻略チャートを見る（GameWith）↗</a>` : ''}${m.src ? `<a class="ext" href="${m.src}" target="_blank" rel="noopener">${m.srcName || '情報元'}を見る ↗</a>` : ''}</div>` : ''}
+   <button class="mopen" data-m="${m.id}" aria-expanded="${open}"><span class="nm">${m.n}</span><span class="chips">${flags(m)}</span>${m.tips.length || m.guide ? `<span class="more" aria-hidden="true">${open ? '▲' : '▼'}</span>` : '<span class="more" aria-hidden="true">›</span>'}</button>
+   ${open ? `<div class="mbody">${m.tips.length ? `<ul class="tips">${m.tips.map((t) => `<li>${t}</li>`).join('')}</ul>` : (m.guide ? '' : '<p class="muted">特に注意点はありません。</p>')}${guideHtml(m.guide)}${m.url ? `<a class="ext" href="${m.url}" target="_blank" rel="noopener">GameWith でもっと詳しく ↗</a>` : ''}${m.src ? `<a class="ext" href="${m.src}" target="_blank" rel="noopener">${m.srcName || '情報元'}を見る ↗</a>` : ''}</div>` : ''}
+  </div>`;
+}
+
+function guideHtml(g) {
+  if (!g) return '';
+  return `<div class="guide">
+   <h4>流れ</h4><ol class="flow">${g.f.map((s) => `<li>${s}</li>`).join('')}</ol>
+   ${g.h && g.h.length ? `<h4>コツ</h4><ul class="tips">${g.h.map((s) => `<li>${s}</li>`).join('')}</ul>` : ''}
+   ${g.r ? `<p class="rew"><b>報酬</b>${g.r}</p>` : ''}
   </div>`;
 }
 

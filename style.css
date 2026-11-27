@@ -129,6 +129,12 @@ section[hidden]{display:none}
 .mbody{grid-column:1/-1;padding:4px 2px 2px 36px;display:grid;gap:8px}
 .tips{margin:0;padding-left:1.1em;display:grid;gap:4px;font-size:14px}
 .tips b{color:var(--accent)}
+.guide{display:grid;gap:6px;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--teal) 8%,transparent)}
+.guide h4{margin:2px 0 0;font-size:12px;letter-spacing:.08em;color:var(--teal)}
+.flow{margin:0;padding-left:1.4em;display:grid;gap:4px;font-size:14px}
+.flow li::marker{font-weight:700;color:var(--teal)}
+.rew{margin:2px 0 0;font-size:14px}
+.rew b{font-size:12px;color:var(--teal);margin-right:8px}
 .ext{font-size:13px;font-weight:700;color:var(--teal);text-decoration:none}
 .chip.love{background:var(--accent-soft);color:var(--accent)}
 .hint{font-size:12px;color:var(--muted);margin:10px 2px 0}
