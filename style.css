@@ -138,7 +138,7 @@ section[hidden]{display:none}
 .where{margin:0;font-size:14px}
 .where b{font-size:12px;color:var(--teal);margin-right:8px}
 .tips.miss li::marker{color:#d9534f}
-.vids{display:grid;gap:8px}
+.vids{display:grid;gap:8px;max-width:560px}
 .vids.multi{grid-template-columns:repeat(2,minmax(0,1fr))}
 .vid{margin:0;display:grid;gap:4px}
 .vid figcaption{font-size:12px;opacity:.85}
